@@ -17,7 +17,6 @@ function App() {
     if (!cardRef.current) return;
     const scrollAmount = 320;
     const currentScroll = cardRef.current.scrollLeft;
-    console.log(currentScroll);
     if (direction == "left") {
       cardRef.current.scrollTo({
         left: currentScroll - scrollAmount,

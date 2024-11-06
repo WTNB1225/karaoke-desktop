@@ -1,13 +1,10 @@
-import { useState } from "react";
-
+import {useState} from "react";
 const map = new Map();
 map.set(440.0, "A4");
 map.set(466.16, "A#4");
 map.set(493.88, "B4");
 map.set(523.25, "C5");
 map.set(554.37, "C#5");
-
-
 export default function Play() {
     const [micFrequency, setMicFrequency] = useState<number>(0);
     const [mediaFrequency, setMediaFrequency] = useState<number>(0);
@@ -45,27 +42,23 @@ export default function Play() {
             console.error("MediaStreamエラー:", error);
         }
     }
-
     async function analyzeAudioFrequency() {
         try {
             // ユーザーにマイクアクセスを要求
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             // オーディオコンテキストを作成
             const micContext = new AudioContext();
-
             const micAnalyser = micContext.createAnalyser();
             
             // マイク入力をオーディオノードに接続
             const source = micContext.createMediaStreamSource(stream);
             source.connect(micAnalyser);
-
             // FFTサイズを設定
             micAnalyser.fftSize = 1024*8;
             const bufferLength = micAnalyser.frequencyBinCount;
             const dataArray = new Uint8Array(bufferLength);
             // サンプリングレート取得
             const sampleRate = micContext.sampleRate;
-
             // 周波数データを取得して描画
             function getFrequency() {
                 micAnalyser.getByteFrequencyData(dataArray);
@@ -83,13 +76,11 @@ export default function Play() {
                     setMicFrequency(peakFrequency);
                 }
             }
-
             setInterval(getFrequency, 1);
         } catch (error) {
             console.error("マイクアクセスエラー:", error);
         }
     }
-
     return (
         <div className="flex w-full h-screen bg-gray-950">
             <h1 className="mx-auto mt-10 text-lg">Karaoke</h1>

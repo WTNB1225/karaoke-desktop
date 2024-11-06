@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faBars , faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-
 export function Sidebar() {
     return (
         <aside className="ml-0 w-20 h-screen bg-gray-800">
