@@ -14,6 +14,36 @@ edition = "2021"
 name = "karaoke_app_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
+[[bin]]
+name = "xf-parser"
+path = "src/main.rs"
+
+[features]
+default = ["alloc", "std", "parallel"]
+
+# Reject corrupted or uncompliant files, even if they could be read anyway.
+#
+# `ErrorKind::Malformed` errors will only be raised when this feature is enabled.
+strict = []
+
+# Enable the `alloc` dependency.
+#
+# Disabling this feature leaves pretty much only the raw `parse` and `write` functions, but makes
+# the crate fully `no_std`.
+# If this feature is enabled, but the `std` feature is not, the crate becomes `no_std + alloc`.
+alloc = []
+
+# Integrate with the `std` library.
+# Depends on the `alloc` feature.
+std = ["alloc"]
+
+# Enable multithreaded parsing.
+# Depends on the `std` feature.
+#
+# Multithreaded parsing is automatically disabled for tiny MIDI files.
+# Currently, multithreading brings in the `rayon` dependency.
+parallel = ["std", "rayon"]
+
 [build-dependencies]
 tauri-build = { version = "2.0.0", features = [] }
 
@@ -24,4 +54,4 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 midly = "0.5.3"
 encoding_rs = "0.8.35"
-
+rayon = { version = "1", optional = true }

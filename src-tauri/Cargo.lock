@@ -1538,6 +1538,7 @@ version = "0.1.0"
 dependencies = [
  "encoding_rs",
  "midly",
+ "rayon",
  "serde",
  "serde_json",
  "tauri",
