@@ -57,6 +57,7 @@ export default function Play() {
     const [noteCtx, setNoteCtx] = useState<CanvasRenderingContext2D | null>(null);
     const [judgeCtx, setJudgeCtx] = useState<CanvasRenderingContext2D | null>(null);
     const [notes, setNotes] = useState<Note[]>([]);
+    const [frequecy, setFrequency] = useState<number>(0);
     let lastTime = 0;
 
 
@@ -74,10 +75,52 @@ export default function Play() {
         });
     }
 
+    async function analyzeAudioFrequency() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); // マイクの使用を許可
+            const audioCtx = new AudioContext();
+            const analyser = audioCtx.createAnalyser();
+    
+            // マイクの音声をオーディオノードに接続
+            const source = audioCtx.createMediaStreamSource(stream);
+            source.connect(analyser);
+    
+            // FFTの設定
+            analyser.fftSize = 1024 * 8; // FFTのサイズ これが上限
+            const bufferLength = analyser.frequencyBinCount; // フーリエ変換の結果の配列の長さ FFTサイズの半分
+            const dataArray = new Uint8Array(bufferLength); // フーリエ変換の結果を格納する配列
+            
+            //サンプルレートの取得
+            const sampleRate = audioCtx.sampleRate;
+    
+            const getFrequency = () => {
+                analyser.getByteFrequencyData(dataArray);
+                const max = Math.max(...dataArray);
+                const index = dataArray.indexOf(max);
+                const peakFreqency = sampleRate / bufferLength * index;
+                // 小さい音の時やノイズが多いときは無視
+                if (dataArray[index] < 100 || peakFreqency < 80 || peakFreqency > 1000) return;
+                setFrequency(peakFreqency / 2);
+                console.log(peakFreqency / 2);
+            }
+            const updateFrequency = () => {
+                getFrequency();
+                requestAnimationFrame(updateFrequency);
+            }
+
+            updateFrequency();
+        } catch(e) {
+            console.error("マイクの入力を許可してください");
+        }
+    }
+    
+
     useEffect(() => {
         const canvas = canvasRef.current;
         const canvas1 = canvas1Ref.current;
         const canvas2 = canvas2Ref.current;
+
+        analyzeAudioFrequency();
 
         if (!canvas || !canvas1 || !canvas2) return;
 
