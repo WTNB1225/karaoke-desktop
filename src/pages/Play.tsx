@@ -3,7 +3,10 @@ import { useState, useEffect, useRef } from "react";
 const canvasWidth = 1200;
 const canvasHeight = 800;
 // ノートの音階
+const noteFreq = [130, 138, 146, 155, 164, 174, 184, 195, 207, 219, 232, 246, 261, 277, 293, 311, 329, 349, 369, 391, 415, 440, 466, 493, 523, 554, 587, 622, 659, 698];
+noteFreq.reverse();
 const noteRange = ["C3", "C#3", "D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3", "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", "C5", "C#5", "D5", "D#5", "E5", "F5", ];
+noteRange.reverse();
 // 判定時のY座標
 const noteLeneTop = [100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 440, 460, 480, 500, 520, 540, 560, 580, 600, 620, 640, 660, 680, 700];
 class Note {
@@ -38,7 +41,7 @@ class Note {
     }
 
     draw() {
-        this.ctx.fillStyle = "red";
+        this.ctx.fillStyle = "lightgreen";
         this.ctx.fillRect(this.x, this.y, this.speed * this.duration, this.height);
     }
 
@@ -75,6 +78,24 @@ export default function Play() {
         });
     }
 
+    const drawBall = (ctx: CanvasRenderingContext2D, frequecy: number) => {
+        let min = 1000;
+        let noteIndex = 0;
+        noteFreq.forEach((note, index) => {
+            if (Math.abs(note - frequecy) < min) {
+                min = Math.abs(note - frequecy);
+                noteIndex = index;
+            }
+        });
+
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        ctx.beginPath();
+        ctx.fillStyle = "Red";
+        ctx.arc(100, noteLeneTop[noteIndex] + 10, 7, 0, Math.PI * 2, false);
+        ctx.fill();
+        ctx.closePath();
+    }
+
     async function analyzeAudioFrequency() {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); // マイクの使用を許可
@@ -100,8 +121,8 @@ export default function Play() {
                 const peakFreqency = sampleRate / bufferLength * index;
                 // 小さい音の時やノイズが多いときは無視
                 if (dataArray[index] < 100 || peakFreqency < 80 || peakFreqency > 1000) return;
-                setFrequency(peakFreqency / 2);
-                console.log(peakFreqency / 2);
+                setFrequency((peakFreqency / 2));
+                console.log(Math.floor(peakFreqency / 2));
             }
             const updateFrequency = () => {
                 getFrequency();
@@ -146,8 +167,9 @@ export default function Play() {
         }
     },[noteCtx]);
 
+    // ノーツの描画と更新
     useEffect(() => {
-        if (noteCtx && judgeCtx) {
+        if (noteCtx) {
             const gameLoop = (time: number) => {
                 const deltaTime = (time - lastTime) / 1000; // フレーム間の時間差を秒に変換
                 lastTime = time;
@@ -157,10 +179,14 @@ export default function Play() {
             }
             requestAnimationFrame(gameLoop);
         }
-    },[noteCtx, notes, judgeCtx]);
+    },[noteCtx, notes]);
 
-    console.log(notes);
-    console.log(lastTime);
+    // 判定枠の描画
+    useEffect(() => {
+        if (judgeCtx) {
+            drawBall(judgeCtx, frequecy);
+        }
+    }, [judgeCtx, frequecy]);
 
     return (
         <div className="flex w-full h-screen bg-gray-950">
