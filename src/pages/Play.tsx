@@ -135,7 +135,10 @@ export default function Play() {
                 const index = dataArray.indexOf(max);
                 const peakFreqency = sampleRate / bufferLength * index;
                 // 小さい音の時やノイズが多いときは無視
-                if (dataArray[index] < 100 || peakFreqency < 80 || peakFreqency > 1000) return;
+                if (dataArray[index] < 100 || peakFreqency < 80 || peakFreqency > 1000) {
+                    setFrequency(0); // ボールを一番下にする
+                    return;
+                }
                 setFrequency((peakFreqency / 2));
             }
             const updateFrequency = () => {
