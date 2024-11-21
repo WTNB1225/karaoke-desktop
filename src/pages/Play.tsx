@@ -45,9 +45,16 @@ class Note {
         this.ctx.fillRect(this.x, this.y, this.speed * this.duration, this.height);
     }
 
-    check() {
-        if (this.x + this.width < this.judgeXPos) {
-            console.log("pass");
+    check(judgeYIndex: number) {  
+        if (this.x < this.judgeXPos && this.x + this.length > this.judgeXPos) {
+            const freqPosY = noteLeneTop[judgeYIndex]; // ボールの描画のためにY座標を10pxプラスしているから10を足す
+            const notePosY = this.y - 2; 
+            const diff = Math.abs(freqPosY - notePosY);
+            if (diff < 20) {
+                console.log("Good");
+            } else {
+                console.log("Bad");
+            }
             return true;
         }
     }
@@ -61,8 +68,8 @@ export default function Play() {
     const [judgeCtx, setJudgeCtx] = useState<CanvasRenderingContext2D | null>(null);
     const [notes, setNotes] = useState<Note[]>([]);
     const [frequecy, setFrequency] = useState<number>(0);
+    const posYIndex = useRef<number>(0);
     let lastTime = 0;
-
 
     const drawNotes = (notes: Note[], noteCtx: CanvasRenderingContext2D) => {
         if (!noteCtx) return;
@@ -78,6 +85,13 @@ export default function Play() {
         });
     }
 
+    //TODO: ノーツの判定
+    const checkNote = (notes: Note[]) => {
+        notes.forEach(note => {
+            note.check(posYIndex.current);
+        });
+    } 
+
     const drawBall = (ctx: CanvasRenderingContext2D, frequecy: number) => {
         let min = 1000;
         let noteIndex = 0;
@@ -87,7 +101,8 @@ export default function Play() {
                 noteIndex = index;
             }
         });
-
+        posYIndex.current = noteIndex;
+        //console.log("noteIndex", posYIndex);
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
         ctx.beginPath();
         ctx.fillStyle = "Red";
@@ -122,7 +137,6 @@ export default function Play() {
                 // 小さい音の時やノイズが多いときは無視
                 if (dataArray[index] < 100 || peakFreqency < 80 || peakFreqency > 1000) return;
                 setFrequency((peakFreqency / 2));
-                console.log(Math.floor(peakFreqency / 2));
             }
             const updateFrequency = () => {
                 getFrequency();
@@ -134,7 +148,6 @@ export default function Play() {
             console.error("マイクの入力を許可してください");
         }
     }
-    
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -151,7 +164,7 @@ export default function Play() {
 
         if (!ctx || !judgeCtx || !noteCtx) return;
 
-        noteLeneTop.forEach((y, index) => {
+        noteLeneTop.forEach((y) => {
             ctx.fillStyle = "white";
             ctx.fillRect(100, y, canvasWidth, 2);
         });
@@ -161,7 +174,6 @@ export default function Play() {
     },[]);
 
     useEffect(() => {
-        console.log(noteCtx);
         if (noteCtx) {
             setNotes(prevNotes => [...prevNotes, new Note(noteCtx, 200, 10, 15, 102, 20, 18), new Note(noteCtx, 200, 2, 10, 122, 20, 18)]);
         }
@@ -175,6 +187,7 @@ export default function Play() {
                 lastTime = time;
                 updateNotes(notes, deltaTime);
                 drawNotes(notes, noteCtx);
+                checkNote(notes);
                 requestAnimationFrame(gameLoop);
             }
             requestAnimationFrame(gameLoop);
