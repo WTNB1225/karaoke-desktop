@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use karaoke_app_lib::{Smf, TrackEventKind, MetaMessage, MidiMessage};
+use midly_extension::{Smf, MetaMessage, MidiMessage, TrackEventKind};
 use std::fs;
 use encoding_rs::SHIFT_JIS;
 use std::collections::HashMap;
@@ -58,6 +58,7 @@ fn main() {
         }
     }
     println!("lyrics_sum: {}", midi_sum);
+    karaoke_app_lib::run();
 }
 
 fn get_freq_from_midi(midi: f32) -> f32 {

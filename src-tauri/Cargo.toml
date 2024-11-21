@@ -55,3 +55,6 @@ serde_json = "1"
 midly = "0.5.3"
 encoding_rs = "0.8.35"
 rayon = { version = "1", optional = true }
+
+[dependencies.midly_extension]
+path = "../src-tauri/midly_extension"
