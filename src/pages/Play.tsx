@@ -18,18 +18,16 @@ class Note {
     duration: number; // ノーツの持続時間
     x: number; // ノーツのX座標
     y: number; // ノーツのY座標
-    width: number; // ノーツの幅
     height: number; // ノーツの高さ
     length: number; // ノーツの長さ
 
-    constructor(ctx: CanvasRenderingContext2D, speed: number, startTime: number, endTime: number, y: number, width: number, height: number) {
+    constructor(ctx: CanvasRenderingContext2D, speed: number, startTime: number, endTime: number, y: number, height: number) {
         this.ctx = ctx;
         this.speed = speed;
         this.judgeXPos = 100;
         this.startTime = startTime;
         this.endTime = endTime;
         this.y = y;
-        this.width = width;
         this.height = height;
         this.x = this.judgeXPos + this.startTime * this.speed;
         this.duration = this.endTime - this.startTime;
@@ -136,7 +134,7 @@ export default function Play() {
                 const peakFreqency = sampleRate / bufferLength * index;
                 // 小さい音の時やノイズが多いときは無視
                 if (dataArray[index] < 100 || peakFreqency < 80 || peakFreqency > 1000) {
-                    setFrequency(0); // ボールを一番下にする
+                    //setFrequency(0); // ボールを一番下にする
                     return;
                 }
                 setFrequency((peakFreqency / 2));
@@ -178,7 +176,7 @@ export default function Play() {
 
     useEffect(() => {
         if (noteCtx) {
-            setNotes(prevNotes => [...prevNotes, new Note(noteCtx, 200, 10, 15, 102, 20, 18), new Note(noteCtx, 200, 2, 10, 122, 20, 18)]);
+            setNotes(prevNotes => [...prevNotes, new Note(noteCtx, 200, 10, 15, 102, 18), new Note(noteCtx, 200, 2, 10, 122, 18)]);
         }
     },[noteCtx]);
 

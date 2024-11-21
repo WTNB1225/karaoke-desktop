@@ -51,16 +51,16 @@ function App() {
         <h1 className="mb-3 text-4xl ml-3 mt-3">Home</h1>
         <div id="card" className="flex overflow-x-auto hide-scrollbar" ref={cardRef} style={{ width: windowWidth - 100 }}>
           <div className="flex gap-4">
-            <Card title="title" author="author" imageUrl="https://picsum.photos/640/480?1" />
-            <Card title="title" author="author" imageUrl="https://picsum.photos/640/480?2" />
-            <Card title="title" author="author" imageUrl="https://picsum.photos/640/480?3" />
-            <Card title="title" author="author" imageUrl="https://picsum.photos/640/480?4" />
-            <Card title="title" author="author" imageUrl="https://picsum.photos/640/480?5" />
-            <Card title="title" author="author" imageUrl="https://picsum.photos/640/480?6" />
-            <Card title="title" author="author" imageUrl="https://picsum.photos/640/480?7" />
-            <Card title="title" author="author" imageUrl="https://picsum.photos/640/480?8" />
-            <Card title="title" author="author" imageUrl="https://picsum.photos/640/480?9" />
-            <Card title="title" author="author" imageUrl="https://picsum.photos/640/480?10" />
+            <Card title="title" author="hogehoge" imageUrl="https://picsum.photos/640/480?1" />
+            <Card title="title" author="hogehoge" imageUrl="https://picsum.photos/640/480?2" />
+            <Card title="title" author="hogehoge" imageUrl="https://picsum.photos/640/480?3" />
+            <Card title="title" author="hogehoge" imageUrl="https://picsum.photos/640/480?4" />
+            <Card title="title" author="hogehoge" imageUrl="https://picsum.photos/640/480?5" />
+            <Card title="title" author="hogehoge" imageUrl="https://picsum.photos/640/480?6" />
+            <Card title="title" author="hogehoge" imageUrl="https://picsum.photos/640/480?7" />
+            <Card title="title" author="hogehoge" imageUrl="https://picsum.photos/640/480?8" />
+            <Card title="title" author="hogehoge" imageUrl="https://picsum.photos/640/480?9" />
+            <Card title="title" author="hogehoge" imageUrl="https://picsum.photos/640/480?10" />
           </div>
         </div>
         {isOverflowed && cardRef.current &&
