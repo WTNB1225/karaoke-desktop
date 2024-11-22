@@ -201,14 +201,14 @@ export default function Play() {
 
     useEffect(() => {
         if (noteCtx) {
-            const newNotes = fetchedNotes.map((note) => {
-                console.log("note", note);
-                
-                return new Note(noteCtx, 1, note.start_time, note.end_time, noteLeneTop[note.frequency], 20);
-            });
-            setNotes((prevNotes) => [...prevNotes, ...newNotes]);
+            //const newNotes = fetchedNotes.map((note) => {
+            //    console.log("note", note);
+            //    
+            //    return new Note(noteCtx, 1, note.start_time, note.end_time, noteLeneTop[note.frequency], 20);
+            //});
+            setNotes((prev) => [...prev, new Note(noteCtx, 200, 1, 5, 100, 20), new Note(noteCtx, 200, 5, 6, 120, 20), new Note(noteCtx, 200, 6, 7, 140, 20), new Note(noteCtx, 200, 7, 20, 400, 20)]);
         }
-    }, [noteCtx, fetchedNotes]);
+    }, [noteCtx]);
 
     console.log("notes", notes);
 
@@ -235,15 +235,13 @@ export default function Play() {
     }, [judgeCtx, frequecy]);
 
     return (
-        <div className="flex w-full h-screen bg-gray-950">
-            <a href="/">Return Home</a>
-            <canvas id="canvas" ref={canvasRef} width={canvasWidth} height={canvasHeight} className="absolute top-0 left-0"></canvas>
-            <canvas id="canvas1" ref={canvas1Ref} width={canvasWidth} height={canvasHeight} className="absolute top-0 left-0"></canvas>
-            <canvas id="canvas2" ref={canvas2Ref} width={canvasWidth} height={canvasHeight} className="absolute top-0 left-0"></canvas>
-        </div>
+        <>
+            <a href="/">home</a>
+            <div className="flex w-full h-screen bg-gray-950">
+                <canvas id="canvas" ref={canvasRef} width={canvasWidth} height={canvasHeight} className="absolute top-0 left-0"></canvas>
+                <canvas id="canvas1" ref={canvas1Ref} width={canvasWidth} height={canvasHeight} className="absolute top-0 left-0"></canvas>
+                <canvas id="canvas2" ref={canvas2Ref} width={canvasWidth} height={canvasHeight} className="absolute top-0 left-0"></canvas>
+            </div>
+        </>
     );
-}
-
-function forEach(arg0: (note: any) => void) {
-    throw new Error("Function not implemented.");
 }
