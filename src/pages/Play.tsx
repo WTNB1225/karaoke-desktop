@@ -1,4 +1,11 @@
 import { useState, useEffect, useRef } from "react";
+import { invoke } from "@tauri-apps/api/core";
+
+type NoteData = {
+    frequency: number;
+    start_time: number;
+    end_time: number;
+}
 
 const canvasWidth = 1200;
 const canvasHeight = 800;
@@ -65,6 +72,7 @@ export default function Play() {
     const [noteCtx, setNoteCtx] = useState<CanvasRenderingContext2D | null>(null);
     const [judgeCtx, setJudgeCtx] = useState<CanvasRenderingContext2D | null>(null);
     const [notes, setNotes] = useState<Note[]>([]);
+    const [fetchedNotes, setFetchedNotes] = useState<NoteData[]>([]);
     const [frequecy, setFrequency] = useState<number>(0);
     const posYIndex = useRef<number>(0);
     let lastTime = 0;
@@ -174,11 +182,35 @@ export default function Play() {
         setJudgeCtx(judgeCtx);
     },[]);
 
+    // TauriのAPIを使ってノーツデータを取得
+    useEffect(() => {
+        invoke("get_notes_data").then((notes) => {
+            (notes as NoteData[]).forEach((note) => {
+                console.log("note", note);
+                let diff = 10000;
+                noteFreq.forEach((freq, index) => {
+                    if (Math.abs(freq - note.frequency) < diff) {
+                        diff = Math.abs(freq - note.frequency);
+                        note.frequency = freq;
+                    }
+                });
+            })
+            setFetchedNotes(notes as NoteData[]);
+        });
+    }, []);
+
     useEffect(() => {
         if (noteCtx) {
-            setNotes(prevNotes => [...prevNotes, new Note(noteCtx, 200, 10, 15, 102, 18), new Note(noteCtx, 200, 2, 10, 122, 18)]);
+            const newNotes = fetchedNotes.map((note) => {
+                console.log("note", note);
+                
+                return new Note(noteCtx, 1, note.start_time, note.end_time, noteLeneTop[note.frequency], 20);
+            });
+            setNotes((prevNotes) => [...prevNotes, ...newNotes]);
         }
-    },[noteCtx]);
+    }, [noteCtx, fetchedNotes]);
+
+    console.log("notes", notes);
 
     // ノーツの描画と更新
     useEffect(() => {
@@ -204,9 +236,14 @@ export default function Play() {
 
     return (
         <div className="flex w-full h-screen bg-gray-950">
+            <a href="/">Return Home</a>
             <canvas id="canvas" ref={canvasRef} width={canvasWidth} height={canvasHeight} className="absolute top-0 left-0"></canvas>
             <canvas id="canvas1" ref={canvas1Ref} width={canvasWidth} height={canvasHeight} className="absolute top-0 left-0"></canvas>
             <canvas id="canvas2" ref={canvas2Ref} width={canvasWidth} height={canvasHeight} className="absolute top-0 left-0"></canvas>
         </div>
     );
+}
+
+function forEach(arg0: (note: any) => void) {
+    throw new Error("Function not implemented.");
 }

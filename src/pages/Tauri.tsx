@@ -12,11 +12,9 @@ export default function Tauri() {
 
     useEffect(() => {
         invoke("get_notes_data").then((notes) => {
-            console.log(notes);
+            setNotesData(notes as Note[]);
         });
     }, []);
-
-    console.log(notesData);
 
     return (
         <div className="flex items-center justify-center h-screen bg-gray-100">
