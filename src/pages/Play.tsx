@@ -201,12 +201,11 @@ export default function Play() {
 
     useEffect(() => {
         if (noteCtx) {
-            //const newNotes = fetchedNotes.map((note) => {
-            //    console.log("note", note);
-            //    
-            //    return new Note(noteCtx, 1, note.start_time, note.end_time, noteLeneTop[note.frequency], 20);
-            //});
-            setNotes((prev) => [...prev, new Note(noteCtx, 200, 1, 5, 100, 20), new Note(noteCtx, 200, 5, 6, 120, 20), new Note(noteCtx, 200, 6, 7, 140, 20), new Note(noteCtx, 200, 7, 20, 400, 20)]);
+            const newNotes = fetchedNotes.map((note) => {            
+                return new Note(noteCtx, 1, note.start_time, note.end_time, noteLeneTop[note.frequency], 20);
+            });
+            setNotes(newNotes);
+            //setNotes((prev) => [...prev, new Note(noteCtx, 200, 1, 5, 100, 20), new Note(noteCtx, 200, 5, 6, 120, 20), new Note(noteCtx, 200, 6, 7, 140, 20), new Note(noteCtx, 200, 7, 20, 400, 20)]);
         }
     }, [noteCtx]);
 

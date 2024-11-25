@@ -27,7 +27,7 @@ pub fn run() {
         .expect("error while running tauri application");
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct NoteData {
     pub frequency: u32,
     pub start_time: f64,
@@ -37,7 +37,8 @@ pub struct NoteData {
 
 #[tauri::command]
 fn get_notes_data() -> Vec<NoteData> {
-    let bytes = fs::read("D:/workspace/midi/BELOVED.MID").unwrap();
+    //let bytes = fs::read("D:/workspace/midi/BELOVED.MID").unwrap();
+    let bytes = fs::read("C:/Users/e-chi/Downloads/twinkle-little-star.mid").unwrap();
     let smf = Smf::parse(&bytes).unwrap();
     //let mut lyrics_sum: u32 = 0;
     let mut midi_sum: f64 = 0.0;
@@ -115,6 +116,7 @@ fn get_notes_data() -> Vec<NoteData> {
 
     //println!("midi_sum {}", midi_sum);
     //println!("hoge {}", hoge);
+    println!("{:?}", note_data);
     note_data
 }
 fn get_freq_from_midi(midi: f32) -> f32 {
