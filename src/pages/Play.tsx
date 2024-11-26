@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { useNavigate } from "react-router-dom";
+import { width } from "@fortawesome/free-regular-svg-icons/faAddressBook";
+import { styleText } from "util";
 
 type NoteData = {
     frequency: number;
@@ -75,6 +78,7 @@ export default function Play() {
     const [fetchedNotes, setFetchedNotes] = useState<NoteData[]>([]);
     const [frequecy, setFrequency] = useState<number>(0);
     const posYIndex = useRef<number>(0);
+    const navigate = useNavigate();
     let lastTime = 0;
 
     const drawNotes = (notes: Note[], noteCtx: CanvasRenderingContext2D) => {
@@ -204,8 +208,8 @@ export default function Play() {
             const newNotes = fetchedNotes.map((note) => {            
                 return new Note(noteCtx, 1, note.start_time, note.end_time, noteLeneTop[note.frequency], 20);
             });
-            setNotes(newNotes);
-            //setNotes((prev) => [...prev, new Note(noteCtx, 200, 1, 5, 100, 20), new Note(noteCtx, 200, 5, 6, 120, 20), new Note(noteCtx, 200, 6, 7, 140, 20), new Note(noteCtx, 200, 7, 20, 400, 20)]);
+            //setNotes(newNotes);
+            setNotes((prev) => [...prev, new Note(noteCtx, 200, 1, 5, 100, 20), new Note(noteCtx, 200, 5, 6, 120, 20), new Note(noteCtx, 200, 6, 7, 140, 20), new Note(noteCtx, 200, 7, 10, 400, 20), new Note(noteCtx, 500, 10, 14, 200, 20)]);
         }
     }, [noteCtx]);
 
@@ -235,11 +239,11 @@ export default function Play() {
 
     return (
         <>
-            <a href="/">home</a>
+            <button onClick={() => {navigate("/")}}>Home</button>
             <div className="flex w-full h-screen bg-gray-950">
-                <canvas id="canvas" ref={canvasRef} width={canvasWidth} height={canvasHeight} className="absolute top-0 left-0"></canvas>
-                <canvas id="canvas1" ref={canvas1Ref} width={canvasWidth} height={canvasHeight} className="absolute top-0 left-0"></canvas>
-                <canvas id="canvas2" ref={canvas2Ref} width={canvasWidth} height={canvasHeight} className="absolute top-0 left-0"></canvas>
+                <canvas id="canvas" ref={canvasRef} width={canvasWidth} height={canvasHeight} className="absolute top-2 left-0"></canvas>
+                <canvas id="canvas1" ref={canvas1Ref} width={canvasWidth} height={canvasHeight} className="absolute top-2 left-0"></canvas>
+                <canvas id="canvas2" ref={canvas2Ref} width={canvasWidth} height={canvasHeight} className="absolute top-2 left-0"></canvas>
             </div>
         </>
     );

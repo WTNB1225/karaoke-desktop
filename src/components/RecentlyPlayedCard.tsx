@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlay } from "@fortawesome/free-solid-svg-icons";
-import {invoke} from "@tauri-apps/api/core";
 
 export function RecentlyPlayedCard(props: { title: string, author: string, imageUrl: string }) {
     return (
@@ -14,13 +13,6 @@ export function RecentlyPlayedCard(props: { title: string, author: string, image
             <a href="/play">
                 <FontAwesomeIcon icon={faCirclePlay} className="absolute left-64 w-8 h-8" />
             </a>
-            <button onClick={printCommand}>
-                hogehoge
-            </button>
         </div>
     );
-}
-
-async function printCommand() {
-    await invoke("print_command");
 }
